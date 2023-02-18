@@ -1,8 +1,5 @@
 #include <stdio.h>
-
-void delay_ms(int d) { 
-	for (int i=0; i < (d * 600000); i++);
-}
+#include "header.h"
 
 int main(void) {
 	
