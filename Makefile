@@ -1,20 +1,52 @@
+# Program Output
+NAME = prog
+BINDIR = bin
+TARGET = $(BINDIR)/$(NAME)
+
+# Includes
+INC += 	includes/
+
+# Sources
+SRCDIR = src
+SRC = $(wildcard $(SRCDIR)/*.c)
+
+# Objects
+OBJDIR = $(BINDIR)
+OBJ = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
+
+# Toolchain
 CC = gcc
-TARGET = prog
-SRC = $(wildcard *.c)
-OBJ = $(SRC:.c=.o)
+CFLAGS = -Wall -Wextra -I $(INC)
 
-CFLAGS = -W -Wall -Wextra
+#######################
+#     Compilation     #
+#######################
 
-all: $(TARGET) clean run
+# All (default)
+all: $(TARGET) run
 
-%.o : %.c
-	$(CC) -o $@ -c $<
+# Compile
+$(OBJ) : $(SRC)
+	@echo "\n***** Compile program *****"
+	@mkdir -p bin
+	$(CC) $(CFLAGS) -o $@ -c $< 
+	$(CC) $(CFLAGS) -o $(BINDIR)/main.o -c main.c
 
+# Link
 $(TARGET) : $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
+	@echo "\n***** Create executable *****"
+	$(CC) $(CFLAGS) -o $@ $(BINDIR)/main.o $^
 
+# Clean objects
 clean:
-	rm -rf $(OBJ)
+	@echo "\n***** Cleaning objects *****"
+	rm -rf bin/*.o
 
+# Run executable
 run:
+	@echo "\n***** Run executable *****"
 	./$(TARGET)
+
+uninstall:
+	@echo "\n***** Uninstall *****"
+	rm -rf bin
